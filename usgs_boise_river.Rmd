@@ -105,7 +105,7 @@ for (id in st_all_gage) {
 ```{r}
 df<-meanSummerT_df[ !is.na(meanSummerT_df$X_00010_00003),]
 summary(df)
-save( df, file="USGS13211205_ST_Q.Rdata")
+#save( df, file="USGS13211205_ST_Q.Rdata")
 ```
 
 ```{r}
@@ -123,8 +123,14 @@ met_df<-met_df[,c("date","max_AirTemperature_C","mean_StreamTemp","log_median_Q"
 
 daily_df_summer<-met_df[month(met_df$date) %in% c(6,7,8),]
 
-save(daily_df_summer,file="Boise_daily_df_summer.Rdata")
+#save(daily_df_summer,file="Boise_daily_df_summer.Rdata")
 ```
+
+```{r}
+load( "Boise_daily_df_summer.Rdata"  )
+load(  "USGS13211205_ST_Q.Rdata"  )
+```
+
 
 ```{r}
 M <-cor( daily_df_summer[,c("max_AirTemperature_C","mean_StreamTemp","log_median_Q", "doy")])

@@ -50,7 +50,8 @@ lucky
 ```
 
 ```{r}
-save(lucky,file="lucky.Rdata")
+#save(lucky,file="lucky.Rdata")
+load("lucky.Rdata")
 ```
 
 ```{r}
@@ -81,8 +82,8 @@ Starting on June 9, 2022, the Bureau of Reclamation and the U.S. Army Corps of E
 ```{r}
 lucky_qt<-daily_df_summer[ daily_df_summer$date>=as.Date(  "2022-06-06",format="%Y-%m-%d" ) & daily_df_summer$date<=as.Date(  "2022-06-19",format="%Y-%m-%d" ),]
 plot(lucky_qt$date, lucky_qt$max_AirTemperature_C)
-plot(lucky_qt$date, lucky_qt$luc_qt,main="QT Totalled Average Discharge, cfs" )
-plot(lucky_qt$date, lucky_qt$log_median_Q ,main="log_median_Q" )
-plot(lucky_qt$date, lucky_qt$mean_StreamTemp ,main="mean_StreamTemp" )
+plot(lucky_qt$date, lucky_qt$luc_qt,main="Lucky Peak",ylab="QT Totalled Average Discharge, cfs",xlab="" )
+plot(lucky_qt$date, lucky_qt$log_median_Q ,main="USGS Boise River",ylab="log_median_Q",xlab="" )
+plot(lucky_qt$date, lucky_qt$mean_StreamTemp ,main="USGS Boise River",ylab="mean_StreamTemp",xlab="" )
 ```
 
