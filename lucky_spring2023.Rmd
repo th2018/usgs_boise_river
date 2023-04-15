@@ -1,0 +1,91 @@
+---
+title: "Untitled"
+output:
+  pdf_document: default
+  html_document: default
+---
+
+```{r}
+# install.packages("dataRetrieval")
+library(dataRetrieval) # for getting USGS NWIS data
+# install.packages("tidyhydat")
+library(tidyhydat) # for getting ECCC HYDAT data
+# download_hydat()
+library(dplyr) # for data wrangling and pipelines
+library(ggplot2) # for modifying fasstr plots
+library("dplyr")
+#install.packages('corrplot')
+library(corrplot)
+library(RColorBrewer)
+# install.packages("gbm")
+library("gbm")
+# install.packages("caret")
+library("caret")
+#install.packages("pdp")
+library("pdp")          # model visualization
+library("ggplot2")      # model visualization
+#install.packages("lime")
+library("lime")         # model visualization
+library("pROC")
+#install.packages("e1071", repos="http://R-Forge.R-project.org")
+library("e1071")
+library( "MASS" )    #    used to generate correlated variables
+library("sp")
+library("Hmisc")    #   used for graphing se bars
+#install.packages("randomForest")
+require("randomForest")
+#install.packages("e1071")
+library(e1071)
+library(caret)
+library("ModelMetrics")
+library("foreign")
+library(rvest)
+```
+
+https://www.usbr.gov/pn-bin/inventory.pl?site=LUC&ui=true&interval=daily
+
+```{r}
+lucky <- as.data.frame(read_html("https://www.usbr.gov/pn-bin/daily.pl?station=luc&format=html&year=2022&month=10&day=1&year=2023&month=4&day=14&pcode=gain&pcode=id&pcode=qu&pcode=fb&pcode=qrd&pcode=qt&pcode=xqd&pcode=qsd&pcode=af&pcode=qd") %>% html_table(fill=TRUE))
+lucky
+```
+
+```{r}
+#save(lucky,file="lucky.Rdata")
+#load("lucky.Rdata")
+```
+
+```{r}
+lucky$DateTime<-as.Date(lucky$DateTime,format="%Y-%m-%d")
+plot(lucky$DateTime,lucky$luc_qt,ylab = "QT Totalled Average Discharge, cfs")
+plot(lucky$DateTime,lucky$luc_af ,ylab = "Reservoir Water Storage, acre-feet")
+plot(lucky$DateTime,lucky$luc_id  ,ylab = "Computed Average Reservoir Inflow, cfs")
+```
+
+```{r}
+usgs<-load("Boise_daily_df_summer.Rdata")
+head(usgs)
+daily_df_summer
+```
+
+```{r}
+daily_df_summer<-merge(daily_df_summer,lucky,by.x="date", by.y="DateTime")
+daily_df_summer
+```
+
+```{r}
+plot(daily_df_summer$date,daily_df_summer$max_AirTemperature_C)
+plot( daily_df_summer$max_AirTemperature_C, daily_df_summer$mean_StreamTemp)
+plot( daily_df_summer$log_median_Q , daily_df_summer$mean_StreamTemp)
+plot( daily_df_summer$luc_qt , daily_df_summer$log_median_Q  )
+```
+
+Starting on June 9, 2022, the Bureau of Reclamation and the U.S. Army Corps of Engineers began increasing flows downstream of Lucky Peak Dam to provide additional water for salmon migration in the lower Snake and Columbia rivers.
+
+```{r}
+lucky_qt<-daily_df_summer[ daily_df_summer$date>=as.Date(  "2022-06-06",format="%Y-%m-%d" ) & daily_df_summer$date<=as.Date(  "2022-06-19",format="%Y-%m-%d" ),]
+plot(lucky_qt$date, lucky_qt$max_AirTemperature_C)
+plot(lucky_qt$date, lucky_qt$luc_qt,main="Lucky Peak",ylab="QT Totalled Average Discharge, cfs",xlab="" )
+plot(lucky_qt$date, lucky_qt$log_median_Q ,main="USGS Boise River",ylab="log_median_Q",xlab="" )
+plot(lucky_qt$date, lucky_qt$mean_StreamTemp ,main="USGS Boise River",ylab="mean_StreamTemp",xlab="" )
+```
+
